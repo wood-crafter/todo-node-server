@@ -1,8 +1,14 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 
 app.use(cors())
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 const USERS = [
   { username: 'vnanne', password: '1' },
@@ -15,20 +21,17 @@ app.get('/', function (req, res) {
 })
 
 app.post('/login', function (req, res) {
-  const username = req.username
-  const password = req.password
+  const username = req.body.username
+  const password = req.body.password
 
-  USERS.forEach(element => {
+  for(const element of USERS) {
     if (element.username === username && element.password === password) {
       res.send({
-        code: 200,
-        data: {
-          username,
-          password
-        }
+        code: 200
       })
+      return
     }
-  })
+  }
 
   res.send({
     code: 201
